@@ -9,7 +9,8 @@
         },
         "datajson": {
             "name": "John+Doe",
-            "age": "30"
+            "age": "30",
+            "runtimeid": "env{runtimeid}"
         }
     },
     {
@@ -60,7 +61,8 @@
         },
         "datakv": {
             "name": "John+Doe",
-            "age": "30"
+            "age": "30",
+            "runtimeid": "env{runtimeid}"
         }
     }
 ]

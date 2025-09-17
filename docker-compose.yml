@@ -15,6 +15,7 @@ services:
       test_password1: "pass.wd1"
       test_password2: "pass!wd2"
       test_password3: "pas#swd3"
+      runtimeid: "TESTID"
 
   continuous-curl-runner-sequential:
     image: ${REG}continuous-curl-runner:${TAG}
@@ -30,3 +31,4 @@ services:
       test_password1: "pass.wd1"
       test_password2: "pass!wd2"
       test_password3: "pas#swd3"
+      runtimeid: "TESTID"
