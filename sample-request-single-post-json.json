@@ -9,5 +9,9 @@
     "datajson": {
         "name": "John+Doe",
         "age": "30"
+    },
+    "basic_auth": {
+        "username": "user1",
+        "password": "pas!.trw"
     }
 }

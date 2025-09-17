@@ -48,20 +48,33 @@ _processRow(){
     fi
 
     # basic_auth
-    basic_auth_cmd=""
-    basic_auth_cmd_nopwd=""
     basic_auth_user=$(_jq $encoded_row 'try (.basic_auth .username)')
-    basic_auth_pwd=$(_jq $encoded_row 'try (.basic_auth .password)')
+    basic_auth_curl=""
     if [[ "$basic_auth_user" != "null" && "$basic_auth_user" != ""  ]]; then
-        basic_auth_encoded=$(echo -n "$basic_auth_user:$basic_auth_pwd" | base64)
-        basic_auth_encoded_nopwd=$(echo -n "$basic_auth_user:************" | base64)
-
-        basic_auth_cmd="-H 'Authorization: Basic ${basic_auth_encoded}'"
-        basic_auth_cmd_nopwd="-H 'Authorization: Basic ${basic_auth_encoded_nopwd}'"
+        # basic_auth_encoded=$(_jqc $encoded_row '"\(.basic_auth.username):\(.basic_auth.password)"' | base64)
+        # basic_auth_header=$(printf "%s" "Authorization: Basic ${basic_auth_encoded}")
+        # basic_auth_header_encoded=$(printf "%s" "Basic ${basic_auth_encoded}" | jq -sRr '@uri')
+        # basic_auth_header="-H Authorization:${basic_auth_header_encoded}"
+        # basic_auth_header_echo="-H Authorization: Basic ${basic_auth_user}:*************"
+        
+        basic_auth=$(_jqc $encoded_row '"\(.basic_auth.username):\(.basic_auth.password)"')
+        basic_auth_curl=$(printf "--user %s" ${basic_auth})
     fi
 
-    echo "Executing: curl ${CURL_OPTIONS} -X ${method} ${basic_auth_cmd_nopwd} ${headers_cmd} ${datajson_cmd} ${datakv_cmd} \"${url}\""
-    curl ${CURL_OPTIONS} -X ${method} ${basic_auth_cmd} ${headers_cmd} ${datajson_cmd} ${datakv_cmd} "${url}"
+    # basic_auth_cmd=""
+    # basic_auth_cmd_nopwd=""
+    # basic_auth_user=$(_jq $encoded_row 'try (.basic_auth .username)')
+    # basic_auth_pwd=$(_jq $encoded_row 'try (.basic_auth .password)')
+    # if [[ "$basic_auth_user" != "null" && "$basic_auth_user" != ""  ]]; then
+    #     basic_auth_encoded=$(echo -n "$basic_auth_user:$basic_auth_pwd" | base64)
+    #     basic_auth_encoded_nopwd=$(echo -n "$basic_auth_user:************" | base64)
+
+    #     basic_auth_cmd="-H 'Authorization: Basic $(echo -n "$basic_auth_user:$basic_auth_pwd" | base64)"
+    #     basic_auth_cmd_nopwd="-H 'Authorization: Basic ${basic_auth_encoded_nopwd}'"
+    # fi
+
+    echo "Executing: curl ${CURL_OPTIONS} ${basic_auth_curl} -X ${method} ${headers_cmd} ${datajson_cmd} ${datakv_cmd} \"${url}\""
+    curl ${CURL_OPTIONS} ${basic_auth_curl} -X ${method} ${headers_cmd} ${datajson_cmd} ${datakv_cmd} "${url}"
 }
 
 if [ "$REQUESTS_SELECTION" == "random" ]; then
