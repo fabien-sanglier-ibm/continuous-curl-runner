@@ -6,7 +6,6 @@ services:
     image: ${REG}continuous-curl-runner:${TAG}
     volumes:
       - ./sample-requests.json:/sample-requests.json:ro
-    platform: "linux/amd64"
     environment: 
       CURL_OPTS: "--insecure"
       REQUESTS_JSON_FILE: /sample-requests.json
