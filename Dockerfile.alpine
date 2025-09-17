@@ -24,7 +24,7 @@ ENV CURL_OPTS=""
 
 ## Update packages and clean up cache
 RUN apk update && \
-  apk --no-cache add tini jq gettext bc && \
+  apk --no-cache add tini curl jq gettext bc && \
   rm -rf /var/cache/apk/*
 
 COPY scripts/entrypoint.sh /entrypoint.sh
