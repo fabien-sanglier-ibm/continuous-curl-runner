@@ -12,8 +12,13 @@ _jq() {
 
 # this is for compact formatting
 _jqc() {
+    echo "${1}" | base64 -d | jq -c "${2}"
+}
+
+_jqcr() {
     echo "${1}" | base64 -d | jq -rc "${2}"
 }
+
 
 _processRow(){
     local encoded_row=$1
@@ -57,8 +62,9 @@ _processRow(){
         # basic_auth_header="-H Authorization:${basic_auth_header_encoded}"
         # basic_auth_header_echo="-H Authorization: Basic ${basic_auth_user}:*************"
         
-        basic_auth=$(_jqc $encoded_row '"\(.basic_auth.username):\(.basic_auth.password)"')
+        basic_auth=$(_jqcr $encoded_row '"\(.basic_auth.username):\(.basic_auth.password)"')
         basic_auth_curl=$(printf "--user %s" ${basic_auth})
+        basic_auth_curl_for_print=$(printf "--user %s" "${basic_auth_user}:**********")
     fi
 
     # basic_auth_cmd=""
@@ -73,7 +79,7 @@ _processRow(){
     #     basic_auth_cmd_nopwd="-H 'Authorization: Basic ${basic_auth_encoded_nopwd}'"
     # fi
 
-    echo "Executing: curl ${CURL_OPTIONS} ${basic_auth_curl} -X ${method} ${headers_cmd} ${datajson_cmd} ${datakv_cmd} \"${url}\""
+    echo "Executing: curl ${CURL_OPTIONS} ${basic_auth_curl_for_print} -X ${method} ${headers_cmd} ${datajson_cmd} ${datakv_cmd} \"${url}\""
     curl ${CURL_OPTIONS} ${basic_auth_curl} -X ${method} ${headers_cmd} ${datajson_cmd} ${datakv_cmd} "${url}"
 }
 

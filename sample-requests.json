@@ -1,5 +1,18 @@
 [
     {
+        "method": "POST",
+        "url": "https://amazon.com",
+        "headers": {
+            "Content-Type": "application/json",
+            "test": "test",
+            "test2": "test2"
+        },
+        "datajson": {
+            "name": "John+Doe",
+            "age": "30"
+        }
+    },
+    {
         "method": "GET",
         "url": "https://google.com",
         "basic_auth": {
@@ -35,19 +48,6 @@
             "Content-Type": "application/json",
             "test": "test",
             "test2": "test2"
-        }
-    },
-    {
-        "method": "POST",
-        "url": "https://amazon.com",
-        "headers": {
-            "Content-Type": "application/json",
-            "test": "test",
-            "test2": "test2"
-        },
-        "datajson": {
-            "name": "John+Doe",
-            "age": "30"
         }
     },
     {
