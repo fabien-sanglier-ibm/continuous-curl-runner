@@ -71,7 +71,10 @@ elif [ "$REQUESTS_SELECTION" == "sequential" ]; then
     for row in $requests_encoded; do
         _processRow $row
         if [ "x$REQUESTS_SEQUENTIAL_INTERVAL" != "x" ]; then
+            echo "Sequential sleep time requested - Waiting $REQUESTS_SEQUENTIAL_INTERVAL seconds"
             sleep $REQUESTS_SEQUENTIAL_INTERVAL
+        else
+            echo ""
         fi
     done
 else
