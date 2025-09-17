@@ -53,8 +53,8 @@ _processRow(){
     basic_auth_user=$(_jq $encoded_row 'try (.basic_auth .username)')
     basic_auth_pwd=$(_jq $encoded_row 'try (.basic_auth .password)')
     if [[ "$basic_auth_user" != "null" && "$basic_auth_user" != ""  ]]; then
-        basic_auth_cmd="-u $basic_auth_user:$basic_auth_pwd"
-        basic_auth_cmd_nopwd="-u $basic_auth_user:************"
+        basic_auth_cmd="-u '$basic_auth_user:$basic_auth_pwd'"
+        basic_auth_cmd_nopwd="-u '$basic_auth_user:************'"
     fi
 
     echo "Executing: curl ${CURL_OPTIONS} -X ${method} ${basic_auth_cmd_nopwd} ${headers_cmd} ${datajson_cmd} ${datakv_cmd} \"${url}\""
