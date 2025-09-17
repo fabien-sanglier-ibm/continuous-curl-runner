@@ -68,9 +68,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          build-args: |
-            BASE_IMAGE=redhat/ubi9-minimal
-            BUILDER_IMAGE=redhat/ubi9-minimal
+          file: Dockerfile.alpine
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}

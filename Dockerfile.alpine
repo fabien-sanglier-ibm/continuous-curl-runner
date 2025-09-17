@@ -1,0 +1,56 @@
+ARG ALPINE_VERSION=3.22
+ARG TINI_VERSION=v0.19.0
+
+FROM --platform=$BUILDPLATFORM alpine:${ALPINE_VERSION} as builder
+
+ARG TARGETOS
+ARG TARGETARCH
+ARG TINI_VERSION
+
+## Update packages and clean up cache
+RUN apk update && \
+  apk --no-cache add wget && \
+  rm -rf /var/cache/apk/*
+
+RUN wget -P /tmp -O tini --no-check-certificate --no-cookies --quiet https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-${TARGETARCH} \
+    && wget -P /tmp -O tini.sha256sum --no-check-certificate --no-cookies --quiet https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-${TARGETARCH}.sha256sum \
+    && cd /tmp \
+    && echo "$(cat tini.sha256sum)" | sha256sum -c \
+    && true
+
+# Finalize the image
+######################################################################################################
+
+FROM alpine:${ALPINE_VERSION}
+
+LABEL org.opencontainers.image.authors="fabien.sanglier@ibm.com" \
+      org.opencontainers.image.vendor="ibm" \
+      org.opencontainers.image.title="continuous-curl-runner" \
+      org.opencontainers.image.description="A simple runner to execute curl requests from a list of possible requests" \
+      org.opencontainers.image.version="" \
+      org.opencontainers.image.source="" \
+      org.opencontainers.image.url="" \
+      org.opencontainers.image.documentation=""
+
+ENV REQUESTS_JSON_FILE=""
+ENV REQUESTS_JSON=""
+ENV REQUESTS_INTERVAL=""
+ENV REQUESTS_SELECTION="random"
+ENV CURL_OPTS=""
+
+## Update packages and clean up cache
+RUN apk update && \
+  apk --no-cache add jq gettext bc && \
+  rm -rf /var/cache/apk/*
+
+COPY scripts/entrypoint.sh /entrypoint.sh
+COPY scripts/curl_requests.sh /curl_requests.sh
+
+COPY --from=builder /tmp/tini /tini
+RUN chmod +x /tini
+
+WORKDIR /
+
+RUN chmod a+x entrypoint.sh curl_requests.sh
+
+ENTRYPOINT ["/tini", "--", "/entrypoint.sh"]
