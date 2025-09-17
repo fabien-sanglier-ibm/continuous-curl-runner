@@ -12,10 +12,11 @@ RUN apk update && \
   apk --no-cache add wget && \
   rm -rf /var/cache/apk/*
 
-RUN wget -O /tmp/tini --no-check-certificate --no-cookies --quiet https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-${TARGETARCH} \
-    && wget -O /tmp/tini.sha256sum --no-check-certificate --no-cookies --quiet https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-${TARGETARCH}.sha256sum \
+RUN wget -P /tmp --no-check-certificate --no-cookies --quiet https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-${TARGETARCH} \
+    && wget -P /tmp --no-check-certificate --no-cookies --quiet https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-${TARGETARCH}.sha256sum \
     && cd /tmp \
-    && echo "$(cat tini.sha256sum)" | sha256sum -c \
+    && echo "$(cat tini-${TARGETARCH}.sha256sum)" | sha256sum -c \
+    && mv tini-${TARGETARCH} tini \
     && true
 
 # Finalize the image
