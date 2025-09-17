@@ -43,7 +43,7 @@ _processRow(){
         basic_auth_cmd_nopwd="-u $basic_auth_user:************"
     fi
 
-    echo "Executing: curl ${CURL_OPTIONS} -X ${method} ${basic_auth_cmd_nopwd} ${headers_cmd} \"${url}\""
+    echo "Executing: curl ${CURL_OPTIONS} -X ${method} ${basic_auth_cmd_nopwd} ${headers_cmd} ${datakv_cmd} \"${url}\""
     curl ${CURL_OPTIONS} -X ${method} ${basic_auth_cmd} ${headers_cmd} ${datakv_cmd} "${url}"
 }
 
