@@ -12,21 +12,21 @@ services:
       REQUESTS_INTERVAL: "5"
       REQUESTS_SELECTION: "random"
       test_user: "some_user"
-      test_password1: "passwd1"
-      test_password2: "passwd2"
-      test_password3: "passwd3"
+      test_password1: "pass.wd1"
+      test_password2: "pass!wd2"
+      test_password3: "pas#swd3"
 
   continuous-curl-runner-sequential:
     image: ${REG}continuous-curl-runner:${TAG}
     volumes:
       - ./sample-requests.json:/sample-requests.json:ro
     environment: 
-      CURL_OPTS: "--insecure"
+      CURL_OPTS: "-v --insecure"
       REQUESTS_JSON_FILE: /sample-requests.json
       REQUESTS_INTERVAL: "20"
       REQUESTS_SELECTION: "sequential"
       REQUESTS_SEQUENTIAL_INTERVAL: "2"
       test_user: "some_user"
-      test_password1: "passwd1"
-      test_password2: "passwd2"
-      test_password3: "passwd3"
+      test_password1: "pass.wd1"
+      test_password2: "pass!wd2"
+      test_password3: "pas#swd3"
