@@ -28,9 +28,10 @@ if [ "$requests_length" == "0" ]; then
     echo "REQUESTS_JSON array is empty...nothing to do."
     exit 2;
 fi
-echo "REQUESTS_JSON array contains $requests_length elements! Ready to curl!"
 
+echo "REQUESTS_JSON array contains $requests_length elements! Ready to curl!"
 if [ "x$REQUESTS_INTERVAL" != "x" ]; then
+    echo "Continuous loop requested, with REQUESTS_INTERVAL=$REQUESTS_INTERVAL seconds in between each curl loop."
     while true; do ./curl_requests.sh; sleep $REQUESTS_INTERVAL; done
 else
     ./curl_requests.sh

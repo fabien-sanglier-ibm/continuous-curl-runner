@@ -66,12 +66,12 @@ if [ "$REQUESTS_SELECTION" == "random" ]; then
     pick=`echo $requests_encoded | cut -d" " -f $index`
     echo "Random request selection...Picked index = $index"
     _processRow $pick
-elif [ "$REQUESTS_SELECTION" == "all" ]; then
+elif [ "$REQUESTS_SELECTION" == "sequential" ]; then
     echo "Executing all requests in sequential order, as specified in the input REQUESTS_JSON content"
     for row in $requests_encoded; do
         _processRow $row
-        if [ "x$REQUESTS_INTERVAL" != "x" ]; then
-            sleep $REQUESTS_INTERVAL
+        if [ "x$REQUESTS_SEQUENTIAL_INTERVAL" != "x" ]; then
+            sleep $REQUESTS_SEQUENTIAL_INTERVAL
         fi
     done
 else
