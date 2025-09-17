@@ -69,8 +69,8 @@ jobs:
         with:
           context: .
           build-args: |
-            BASE_IMAGE=redhat/ubi8-minimal
-            BUILDER_IMAGE=redhat/ubi8-minimal
+            BASE_IMAGE=redhat/ubi9-minimal
+            BUILDER_IMAGE=redhat/ubi9-minimal
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
