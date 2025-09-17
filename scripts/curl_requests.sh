@@ -10,6 +10,11 @@ _jq() {
     echo "${1}" | base64 -d | jq -r "${2}"
 }
 
+# this is for compact formatting
+_jqc() {
+    echo "${1}" | base64 -d | jq -c "${2}"
+}
+
 _processRow(){
     local encoded_row=$1
 
@@ -30,7 +35,16 @@ _processRow(){
     datakv_cmd=""
     if [[ "$datakv_length" != "" && "$datakv_length" != "0" ]]; then
         datakv_cmd=$(_jq $encoded_row '.datakv | to_entries | map("\(.key)=\(.value|tostring)") | join("&")')
-        datakv_cmd="-d ${datakv_cmd}"
+        datakv_cmd="-d '${datakv_cmd}'"
+    fi
+
+    # data json block
+    datajson_length=$(_jq $encoded_row 'try (.datajson | length)')
+    echo "Number of datajson:$datajson_length"
+    datajson_cmd=""
+    if [[ "$datajson_length" != "" && "$datajson_length" != "0" ]]; then
+        datajson_cmd=$(_jqc $encoded_row '.datajson')
+        datajson_cmd="-d '${datajson_cmd}'"
     fi
 
     # basic_auth
@@ -43,8 +57,8 @@ _processRow(){
         basic_auth_cmd_nopwd="-u $basic_auth_user:************"
     fi
 
-    echo "Executing: curl ${CURL_OPTIONS} -X ${method} ${basic_auth_cmd_nopwd} ${headers_cmd} ${datakv_cmd} \"${url}\""
-    curl ${CURL_OPTIONS} -X ${method} ${basic_auth_cmd} ${headers_cmd} ${datakv_cmd} "${url}"
+    echo "Executing: curl ${CURL_OPTIONS} -X ${method} ${basic_auth_cmd_nopwd} ${headers_cmd} ${datajson_cmd} ${datakv_cmd} \"${url}\""
+    curl ${CURL_OPTIONS} -X ${method} ${basic_auth_cmd} ${headers_cmd} ${datajson_cmd} ${datakv_cmd} "${url}"
 }
 
 if [ "$REQUESTS_SELECTION" == "random" ]; then
