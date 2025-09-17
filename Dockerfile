@@ -1,15 +1,19 @@
 # define the base image to create this image from
 ######################################################################################################
 
-ARG BASE_IMAGE=redhat/ubi8-minimal
-ARG BUILDER_IMAGE=redhat/ubi8-minimal
+ARG BASE_IMAGE=redhat/ubi9-minimal
+ARG BUILDER_IMAGE=redhat/ubi9-minimal
 
 FROM $BASE_IMAGE as base
 
 # 2. Define the builder, where we'll execute Product Installation and patching
 ######################################################################################################
 
-FROM $BUILDER_IMAGE as builder
+FROM --platform=$BUILDPLATFORM $BUILDER_IMAGE as builder
+
+ARG TARGETOS
+ARG TARGETARCH
+ARG TINI_VERSION v0.19.0
 
 RUN true \
     && microdnf install \
@@ -17,11 +21,10 @@ RUN true \
     && microdnf clean all \
     && true
 
-ENV TINI_VERSION v0.19.0
-RUN wget -P /tmp --no-check-certificate --no-cookies --quiet https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-amd64 \
-    && wget -P /tmp --no-check-certificate --no-cookies --quiet https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-amd64.sha256sum \
+RUN wget -P /tmp -O tini --no-check-certificate --no-cookies --quiet https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-${TARGETARCH} \
+    && wget -P /tmp -O tini.sha256sum --no-check-certificate --no-cookies --quiet https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-${TARGETARCH}.sha256sum \
     && cd /tmp \
-    && echo "$(cat tini-amd64.sha256sum)" | sha256sum -c \
+    && echo "$(cat tini.sha256sum)" | sha256sum -c \
     && true
 
 # Finalize the image
@@ -55,7 +58,7 @@ RUN true \
 COPY scripts/entrypoint.sh /entrypoint.sh
 COPY scripts/curl_requests.sh /curl_requests.sh
 
-COPY --from=builder /tmp/tini-amd64 /tini
+COPY --from=builder /tmp/tini /tini
 RUN chmod +x /tini
 
 WORKDIR /
