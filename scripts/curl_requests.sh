@@ -12,7 +12,7 @@ _jq() {
 
 # this is for compact formatting
 _jqc() {
-    echo "${1}" | base64 -d | jq -c "${2}"
+    echo "${1}" | base64 -d | jq -rc "${2}"
 }
 
 _processRow(){
