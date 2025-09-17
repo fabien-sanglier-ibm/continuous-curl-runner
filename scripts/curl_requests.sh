@@ -23,6 +23,15 @@ _processRow(){
     if [[ "$headers_length" != "" && "$headers_length" != "0" ]]; then
         headers_cmd=$(_jq $encoded_row '.headers | to_entries | map("-H \(.key):\(.value|tostring)") | join(" ")')
     fi
+    
+    # data key value pairs
+    datakv_length=$(_jq $encoded_row 'try (.datakv | length)')
+    echo "Number of datakv:$datakv_length"
+    datakv_cmd=""
+    if [[ "$datakv_length" != "" && "$datakv_length" != "0" ]]; then
+        datakv_cmd=$(_jq $encoded_row '.datakv | to_entries | map("\(.key)=\(.value|tostring)") | join("&")')
+        datakv_cmd="-d ${datakv_cmd}"
+    fi
 
     # basic_auth
     basic_auth_cmd=""
@@ -35,7 +44,7 @@ _processRow(){
     fi
 
     echo "Executing: curl ${CURL_OPTIONS} -X ${method} ${basic_auth_cmd_nopwd} ${headers_cmd} \"${url}\""
-    curl ${CURL_OPTIONS} -X ${method} ${basic_auth_cmd} ${headers_cmd} "${url}"
+    curl ${CURL_OPTIONS} -X ${method} ${basic_auth_cmd} ${headers_cmd} ${datakv_cmd} "${url}"
 }
 
 if [ "$REQUESTS_SELECTION" == "random" ]; then

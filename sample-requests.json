@@ -38,12 +38,16 @@
         }
     },
     {
-        "method": "GET",
+        "method": "POST",
         "url": "https://amazon.com",
         "headers": {
             "Content-Type": "application/json",
             "test": "test",
             "test2": "test2"
+        },
+        "datakv": {
+            "name": "John+Doe",
+            "age": "30"
         }
     }
 ]
